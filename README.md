@@ -36,11 +36,16 @@ Make sure the ets_mediaconvert_preset_v2.py is located on your machine, and then
 chmod +x ets_mediaconvert_preset_v2.py
 ```
 
+Install dependencies.
+```
+poetry install
+```
+
 ###  Script Parameters
 Running the script will provide the following help menu. You can also use the ‘-h’ parameter to show the help menu.
 
 ```
-$ python ets_mediaconvert_preset_v2.py
+$ poetry run python ets_mediaconvert_preset_v2.py
 usage: ets_mediaconvert_preset_v2.py [-h] [-r REGION] [-p ETSID] [-v] [-i] [-c OUTPUTTYPE] [-f]
 ETS to AWS Elemental MediaConvert preset converter
 
