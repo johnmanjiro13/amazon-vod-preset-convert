@@ -357,7 +357,6 @@ def translate_audio(ets_preset_payload, s_audio):
         emf_bitrate = str(min(mp2_range, key=lambda x: abs(x - ets_audio_bitrate)))
         emf_bitrate = int(emf_bitrate) * 1000
         emf_sample = emf_sample * 1000
-        AudioSettings = {}
 
         if (
             json.dumps(ets_preset_payload["Preset"]["Audio"]["Channels"]) == '"auto"'
@@ -449,7 +448,7 @@ def translate_video(ets_preset_payload, s_video):
         elif emf_codec_level == "1.2":
             emf_codec_level = "LEVEL_1_2"
         elif emf_codec_level == "1.3":
-            emf_codec_level = '"LEVEL_1_3"'
+            emf_codec_level = "LEVEL_1_3"
         elif emf_codec_level == "2":
             emf_codec_level = "LEVEL_2"
         elif emf_codec_level == "2.1":
@@ -500,10 +499,10 @@ def translate_video(ets_preset_payload, s_video):
         == "Auto"
     ):
         emf_interlace_mode = "PROGRESSIVE"
-    else:
         print(
             "WARNING: Auto interlaced mode not supported in MediaConvert, setting to progressive"
         )
+    else:
         emf_interlace_mode = "PROGRESSIVE"
 
     ###Strech output###
@@ -678,12 +677,11 @@ def translate_video(ets_preset_payload, s_video):
             VideoSettings[xSettings].update({"FramerateNumerator": emf_codec_framerate})
 
     ###Logic for PAR
-    aspect_ratio = ets_preset_payload["Preset"]["Video"]["DisplayAspectRatio"]
-    if aspect_ratio == "auto":
+    if ets_preset_payload["Preset"]["Video"]["DisplayAspectRatio"] == "auto":
         emf_par = "INITIALIZE_FROM_SOURCE"
         VideoSettings[xSettings].update({"ParControl": emf_par})
 
-    elif aspect_ratio == "1:1":
+    elif ets_preset_payload["Preset"]["Video"]["DisplayAspectRatio"] == "1:1":
         emf_codec_par_num = 1
         emf_codec_par_dem = 1
         VideoSettings[xSettings].update({"ParNumerator": emf_codec_par_num})
@@ -691,7 +689,7 @@ def translate_video(ets_preset_payload, s_video):
         emf_par = "SPECIFIED"
         VideoSettings[xSettings].update({"ParControl": emf_par})
 
-    elif aspect_ratio == "4:3":
+    elif ets_preset_payload["Preset"]["Video"]["DisplayAspectRatio"] == "4:3":
         emf_codec_par_num = 4
         emf_codec_par_dem = 3
         VideoSettings[xSettings].update({"ParNumerator": emf_codec_par_num})
@@ -699,7 +697,7 @@ def translate_video(ets_preset_payload, s_video):
         emf_par = "SPECIFIED"
         VideoSettings[xSettings].update({"ParControl": emf_par})
 
-    elif aspect_ratio == "3:2":
+    elif ets_preset_payload["Preset"]["Video"]["DisplayAspectRatio"] == "3:2":
         emf_codec_par_num = 3
         emf_codec_par_dem = 2
         VideoSettings[xSettings].update({"ParNumerator": emf_codec_par_num})
@@ -707,7 +705,7 @@ def translate_video(ets_preset_payload, s_video):
         emf_par = "SPECIFIED"
         VideoSettings[xSettings].update({"ParControl": emf_par})
 
-    elif aspect_ratio == "16:9":
+    elif ets_preset_payload["Preset"]["Video"]["DisplayAspectRatio"] == "16:9":
         emf_codec_par_num = 40
         emf_codec_par_dem = 30
         VideoSettings[xSettings].update({"ParNumerator": emf_codec_par_num})
