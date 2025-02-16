@@ -31,7 +31,6 @@
 
 import hashlib
 import json
-import boto.elastictranscoder
 import datetime
 import time
 import hashlib
@@ -88,7 +87,7 @@ def validation_preset():
         while True:
             try:
                 etspresetid = args.etsid.lower()
-                read_preset_result = etsclient.read_preset(etspresetid)
+                read_preset_result = etsclient.read_preset(Id=etspresetid)
                 return etspresetid, read_preset_result
             except Exception as e:
                 print(e)
@@ -97,7 +96,7 @@ def validation_preset():
         while True:
             presetid = input("Preset ID: ").lower()
             try:
-                read_preset_result = etsclient.read_preset(presetid)
+                read_preset_result = etsclient.read_preset(Id=presetid)
                 return presetid, read_preset_result
             except Exception as e:
                 print(e)
@@ -374,7 +373,7 @@ def translate_video(ets_preset_payload, s_video):
             emf_codec_level = "AUTO"
             print("WARNING: Item not found defaulting to auto, please change based off bitrate and resolution \n")
     
-    if (ets_preset_payload['Preset']['Video']['MaxWidth'] == 'auto') or (ets_preset_payload['Preset']['Video']['MaxHeight'] == 'auto'):
+    if (ets_preset_payload['Preset']['Video']['Watermarks'][0]['MaxWidth'] == 'auto') or (ets_preset_payload['Preset']['Video']['Watermarks'][0]['MaxHeight'] == 'auto'):
         emf_codec_level = "AUTO"
         print("WARNING: Since resolution is not defined setting Profile Level to AUTO")
     
@@ -393,7 +392,7 @@ def translate_video(ets_preset_payload, s_video):
         emf_interlace_mode = 'PROGRESSIVE'
     
     ###Strech output###
-    if ets_preset_payload['Preset']['Video']['SizingPolicy'] == '"Stretch"':
+    if ets_preset_payload['Preset']['Video']['Watermarks'][0]['SizingPolicy'] == '"Stretch"':
         emf_stretch = "STRETCH_TO_OUTPUT"
     else:
         emf_stretch = "DEFAULT"
@@ -495,11 +494,11 @@ def translate_video(ets_preset_payload, s_video):
         VideoDescription['VideoDescription'].update(VideoPreProcessors)
 
     ##Handle Auto Resolution
-    if ets_preset_payload['Preset']['Video']['MaxWidth'] != 'auto':
-        VideoDescription['VideoDescription'].update({"Width" : int(ets_preset_payload['Preset']['Video']['MaxWidth'])})
+    if ets_preset_payload['Preset']['Video']['Watermarks'][0]['MaxWidth'] != 'auto':
+        VideoDescription['VideoDescription'].update({"Width" : int(ets_preset_payload['Preset']['Video']['Watermarks'][0]['MaxWidth'].replace('%', ''))})
 
-    if ets_preset_payload['Preset']['Video']['MaxHeight'] != 'auto':
-        VideoDescription['VideoDescription'].update({"Height" : int(ets_preset_payload['Preset']['Video']['MaxHeight'])})
+    if ets_preset_payload['Preset']['Video']['Watermarks'][0]['MaxHeight'] != 'auto':
+        VideoDescription['VideoDescription'].update({"Height" : int(ets_preset_payload['Preset']['Video']['Watermarks'][0]['MaxHeight'].replace('%', ''))})
 
     ########################################
     #                                      #
@@ -535,12 +534,12 @@ def translate_video(ets_preset_payload, s_video):
             VideoSettings[xSettings].update({'FramerateNumerator': emf_codec_framerate})
 
     ###Logic for PAR
-    if ets_preset_payload['Preset']['Video']['DisplayAspectRatio'] == "auto":            
+    if ets_preset_payload['Preset']['Video']['AspectRatio'] == "auto":            
         emf_codec_par = "Follow"
         emf_par = "INITIALIZE_FROM_SOURCE"    
         VideoSettings[xSettings].update({'ParControl': emf_par})
         
-    elif ets_preset_payload['Preset']['Video']['DisplayAspectRatio'] == "1:1":
+    elif ets_preset_payload['Preset']['Video']['AspectRatio'] == "1:1":
         emf_codec_par_num = 1
         emf_codec_par_dem = 1
         VideoSettings[xSettings].update({'ParNumerator': emf_codec_par_num})
@@ -548,7 +547,7 @@ def translate_video(ets_preset_payload, s_video):
         emf_par = "SPECIFIED"
         VideoSettings[xSettings].update({'ParControl': emf_par})
 
-    elif ets_preset_payload['Preset']['Video']['DisplayAspectRatio'] == "4:3":
+    elif ets_preset_payload['Preset']['Video']['AspectRatio'] == "4:3":
     
         emf_codec_par_num = 4 
         emf_codec_par_dem = 3
@@ -557,7 +556,7 @@ def translate_video(ets_preset_payload, s_video):
         emf_par = "SPECIFIED"
         VideoSettings[xSettings].update({'ParControl': emf_par})
 
-    elif ets_preset_payload['Preset']['Video']['DisplayAspectRatio'] == "3:2":
+    elif ets_preset_payload['Preset']['Video']['AspectRatio'] == "3:2":
 
         emf_codec_par_num = 3
         emf_codec_par_dem = 2
@@ -566,7 +565,7 @@ def translate_video(ets_preset_payload, s_video):
         emf_par = "SPECIFIED"
         VideoSettings[xSettings].update({'ParControl': emf_par})
     
-    elif ets_preset_payload['Preset']['Video']['DisplayAspectRatio'] == "16:9":
+    elif ets_preset_payload['Preset']['Video']['AspectRatio'] == "16:9":
         emf_codec_par_num = 40
         emf_codec_par_dem = 30
         VideoSettings[xSettings].update({'ParNumerator': emf_codec_par_num})
@@ -802,16 +801,16 @@ def translate_thumbnails(ets_preset_payload, etsid):
     }
 
     ##Handle Auto Resolution
-    if ets_preset_payload['Preset']['Video']['MaxWidth'] != 'auto':
-        emf_preset_thumbnail['Settings']['VideoDescription'].update({"Width": int(ets_preset_payload['Preset']['Thumbnails']['MaxWidth'])})
+    # if ets_preset_payload['Preset']['Video']['Watermarks'][0]['MaxWidth'] != 'auto':
+    #     emf_preset_thumbnail['Settings']['VideoDescription'].update({"Width": int(ets_preset_payload['Preset']['Thumbnails']['MaxWidth'])})
 
-    if ets_preset_payload['Preset']['Video']['MaxHeight'] != 'auto':
-        emf_preset_thumbnail['Settings']['VideoDescription'].update({"Height": int(ets_preset_payload['Preset']['Thumbnails']['MaxHeight'])})
+    # if ets_preset_payload['Preset']['Video']['Watermarks'][0]['MaxHeight'] != 'auto':
+    #     emf_preset_thumbnail['Settings']['VideoDescription'].update({"Height": int(ets_preset_payload['Preset']['Thumbnails']['MaxHeight'])})
 
     return emf_preset_thumbnail
 
 tregion = validation_region()
-etsclient = boto.elastictranscoder.connect_to_region(tregion)
+etsclient = boto3.client('elastictranscoder', region_name=tregion)
 etsid, ets_preset_payload = validation_preset()
 emf_outputgroup = validate_output(outputtype)
 
