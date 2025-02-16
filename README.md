@@ -31,9 +31,9 @@ Default output format [json]: json
 
 #### Pre-Work
 
-Make sure the ets_mediaconvert_preset_v3.py is located on your machine, and then make ets_medaconvert_preset_v2.py executable using the following chmod command:
+Make sure the ets_mediaconvert_preset_v2.py is located on your machine, and then make ets_medaconvert_preset_v2.py executable using the following chmod command:
 ```
-chmod +x ets_mediaconvert_preset_v3.py
+chmod +x ets_mediaconvert_preset_v2.py
 ```
 
 Install dependencies.
@@ -45,8 +45,8 @@ poetry install
 Running the script will provide the following help menu. You can also use the ‘-h’ parameter to show the help menu.
 
 ```
-$ poetry run python ets_mediaconvert_preset_v3.py
-usage: ets_mediaconvert_preset_v3.py [-h] [-r REGION] [-p ETSID] [-v] [-i] [-c OUTPUTTYPE] [-f]
+$ poetry run python ets_mediaconvert_preset_v2.py
+usage: ets_mediaconvert_preset_v2.py [-h] [-r REGION] [-p ETSID] [-v] [-i] [-c OUTPUTTYPE] [-f]
 ETS to AWS Elemental MediaConvert preset converter
 
 optional arguments:
