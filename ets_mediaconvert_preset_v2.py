@@ -473,9 +473,9 @@ def translate_video(ets_preset_payload, s_video):
             )
 
     if (
-        ets_preset_payload["Preset"]["Video"]["Watermarks"][0]["MaxWidth"] == "auto"
+        ets_preset_payload["Preset"]["Video"]["MaxWidth"] == "auto"
     ) or (
-        ets_preset_payload["Preset"]["Video"]["Watermarks"][0]["MaxHeight"] == "auto"
+        ets_preset_payload["Preset"]["Video"]["MaxHeight"] == "auto"
     ):
         emf_codec_level = "AUTO"
         print("WARNING: Since resolution is not defined setting Profile Level to AUTO")
@@ -510,7 +510,7 @@ def translate_video(ets_preset_payload, s_video):
 
     ###Strech output###
     if (
-        ets_preset_payload["Preset"]["Video"]["Watermarks"][0]["SizingPolicy"]
+        ets_preset_payload["Preset"]["Video"]["SizingPolicy"]
         == '"Stretch"'
     ):
         emf_stretch = "STRETCH_TO_OUTPUT"
@@ -640,22 +640,22 @@ def translate_video(ets_preset_payload, s_video):
         VideoDescription["VideoDescription"].update(VideoPreProcessors)
 
     ##Handle Auto Resolution
-    if ets_preset_payload["Preset"]["Video"]["Watermarks"][0]["MaxWidth"] != "auto":
+    if ets_preset_payload["Preset"]["Video"]["MaxWidth"] != "auto":
         VideoDescription["VideoDescription"].update(
             {
                 "Width": int(
-                    ets_preset_payload["Preset"]["Video"]["Watermarks"][0][
+                    ets_preset_payload["Preset"]["Video"][
                         "MaxWidth"
                     ].replace("%", "")
                 )
             }
         )
 
-    if ets_preset_payload["Preset"]["Video"]["Watermarks"][0]["MaxHeight"] != "auto":
+    if ets_preset_payload["Preset"]["Video"]["MaxHeight"] != "auto":
         VideoDescription["VideoDescription"].update(
             {
                 "Height": int(
-                    ets_preset_payload["Preset"]["Video"]["Watermarks"][0][
+                    ets_preset_payload["Preset"]["Video"][
                         "MaxHeight"
                     ].replace("%", "")
                 )
@@ -695,11 +695,12 @@ def translate_video(ets_preset_payload, s_video):
             VideoSettings[xSettings].update({"FramerateNumerator": emf_codec_framerate})
 
     ###Logic for PAR
-    if ets_preset_payload["Preset"]["Video"]["AspectRatio"] == "auto":
+    aspect_ratio = ets_preset_payload['Preset']['Video']['DisplayAspectRatio']
+    if aspect_ratio == "auto":
         emf_par = "INITIALIZE_FROM_SOURCE"
         VideoSettings[xSettings].update({"ParControl": emf_par})
 
-    elif ets_preset_payload["Preset"]["Video"]["AspectRatio"] == "1:1":
+    elif aspect_ratio == "1:1":
         emf_codec_par_num = 1
         emf_codec_par_dem = 1
         VideoSettings[xSettings].update({"ParNumerator": emf_codec_par_num})
@@ -707,7 +708,7 @@ def translate_video(ets_preset_payload, s_video):
         emf_par = "SPECIFIED"
         VideoSettings[xSettings].update({"ParControl": emf_par})
 
-    elif ets_preset_payload["Preset"]["Video"]["AspectRatio"] == "4:3":
+    elif aspect_ratio == "4:3":
         emf_codec_par_num = 4
         emf_codec_par_dem = 3
         VideoSettings[xSettings].update({"ParNumerator": emf_codec_par_num})
@@ -715,7 +716,7 @@ def translate_video(ets_preset_payload, s_video):
         emf_par = "SPECIFIED"
         VideoSettings[xSettings].update({"ParControl": emf_par})
 
-    elif ets_preset_payload["Preset"]["Video"]["AspectRatio"] == "3:2":
+    elif aspect_ratio == "3:2":
         emf_codec_par_num = 3
         emf_codec_par_dem = 2
         VideoSettings[xSettings].update({"ParNumerator": emf_codec_par_num})
@@ -723,7 +724,7 @@ def translate_video(ets_preset_payload, s_video):
         emf_par = "SPECIFIED"
         VideoSettings[xSettings].update({"ParControl": emf_par})
 
-    elif ets_preset_payload["Preset"]["Video"]["AspectRatio"] == "16:9":
+    elif aspect_ratio == "16:9":
         emf_codec_par_num = 40
         emf_codec_par_dem = 30
         VideoSettings[xSettings].update({"ParNumerator": emf_codec_par_num})
@@ -992,11 +993,11 @@ def translate_thumbnails(ets_preset_payload, etsid):
     }
 
     ##Handle Auto Resolution
-    # if ets_preset_payload['Preset']['Video']['Watermarks'][0]['MaxWidth'] != 'auto':
-    #     emf_preset_thumbnail['Settings']['VideoDescription'].update({"Width": int(ets_preset_payload['Preset']['Thumbnails']['MaxWidth'])})
+    if ets_preset_payload['Preset']['Video']['MaxWidth'] != 'auto':
+        emf_preset_thumbnail['Settings']['VideoDescription'].update({"Width": int(ets_preset_payload['Preset']['Thumbnails']['MaxWidth'])})
 
-    # if ets_preset_payload['Preset']['Video']['Watermarks'][0]['MaxHeight'] != 'auto':
-    #     emf_preset_thumbnail['Settings']['VideoDescription'].update({"Height": int(ets_preset_payload['Preset']['Thumbnails']['MaxHeight'])})
+    if ets_preset_payload['Preset']['Video']['MaxHeight'] != 'auto':
+        emf_preset_thumbnail['Settings']['VideoDescription'].update({"Height": int(ets_preset_payload['Preset']['Thumbnails']['MaxHeight'])})
 
     return emf_preset_thumbnail
 
