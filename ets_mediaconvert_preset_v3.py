@@ -29,15 +29,10 @@
 # ---------------------------------------------------------------------------
 
 
-import hashlib
 import json
 import datetime
 import time
-import hashlib
-import json
-import os
 import boto3
-from botocore.exceptions import ClientError
 
 import argparse
 
@@ -210,7 +205,6 @@ def validate_output(outputtype):
 
 
 def translate_audio(ets_preset_payload, s_audio):
-    audiodump = json.dumps(ets_preset_payload["Preset"]["Audio"])
     ets_channel_num = json.dumps(ets_preset_payload["Preset"]["Audio"]["Channels"])
     if ets_channel_num == '"auto"':
         ets_channel_num = '"2"'
@@ -562,7 +556,6 @@ def translate_video(ets_preset_payload, s_video):
                 "HrdBufferInitialFillPercentage": 90,
                 "CodecLevel": emf_codec_level,
                 "CodecProfile": emf_codec_profile,
-                "FlickerAdaptiveQuantization": "ENABLED",
                 "EntropyEncoding": emf_entropy_encoding,
                 "GopBReference": "DISABLED",
                 "GopClosedCadence": 1,
@@ -703,7 +696,6 @@ def translate_video(ets_preset_payload, s_video):
 
     ###Logic for PAR
     if ets_preset_payload["Preset"]["Video"]["AspectRatio"] == "auto":
-        emf_codec_par = "Follow"
         emf_par = "INITIALIZE_FROM_SOURCE"
         VideoSettings[xSettings].update({"ParControl": emf_par})
 
@@ -777,7 +769,7 @@ def translate_video(ets_preset_payload, s_video):
 
     VideoDescription["VideoDescription"].update({"CodecSettings": VideoSettings})
 
-    if args.verbose == True:
+    if args.verbose:
         print("==================VERBOSE LOGGING==================")
         print("==================VIDEO DESCRIPTION==================")
         print(json.dumps(VideoDescription, indent=4, sort_keys=True))
