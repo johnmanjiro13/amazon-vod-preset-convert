@@ -472,9 +472,7 @@ def translate_video(ets_preset_payload, s_video):
                 "WARNING: Item not found defaulting to auto, please change based off bitrate and resolution \n"
             )
 
-    if (
-        ets_preset_payload["Preset"]["Video"]["MaxWidth"] == "auto"
-    ) or (
+    if (ets_preset_payload["Preset"]["Video"]["MaxWidth"] == "auto") or (
         ets_preset_payload["Preset"]["Video"]["MaxHeight"] == "auto"
     ):
         emf_codec_level = "AUTO"
@@ -509,10 +507,7 @@ def translate_video(ets_preset_payload, s_video):
         emf_interlace_mode = "PROGRESSIVE"
 
     ###Strech output###
-    if (
-        ets_preset_payload["Preset"]["Video"]["SizingPolicy"]
-        == '"Stretch"'
-    ):
+    if ets_preset_payload["Preset"]["Video"]["SizingPolicy"] == '"Stretch"':
         emf_stretch = "STRETCH_TO_OUTPUT"
     else:
         emf_stretch = "DEFAULT"
@@ -642,24 +637,12 @@ def translate_video(ets_preset_payload, s_video):
     ##Handle Auto Resolution
     if ets_preset_payload["Preset"]["Video"]["MaxWidth"] != "auto":
         VideoDescription["VideoDescription"].update(
-            {
-                "Width": int(
-                    ets_preset_payload["Preset"]["Video"][
-                        "MaxWidth"
-                    ].replace("%", "")
-                )
-            }
+            {"Width": int(ets_preset_payload["Preset"]["Video"]["MaxWidth"])}
         )
 
     if ets_preset_payload["Preset"]["Video"]["MaxHeight"] != "auto":
         VideoDescription["VideoDescription"].update(
-            {
-                "Height": int(
-                    ets_preset_payload["Preset"]["Video"][
-                        "MaxHeight"
-                    ].replace("%", "")
-                )
-            }
+            {"Height": int(ets_preset_payload["Preset"]["Video"]["MaxHeight"])}
         )
 
     ########################################
@@ -695,7 +678,7 @@ def translate_video(ets_preset_payload, s_video):
             VideoSettings[xSettings].update({"FramerateNumerator": emf_codec_framerate})
 
     ###Logic for PAR
-    aspect_ratio = ets_preset_payload['Preset']['Video']['DisplayAspectRatio']
+    aspect_ratio = ets_preset_payload["Preset"]["Video"]["DisplayAspectRatio"]
     if aspect_ratio == "auto":
         emf_par = "INITIALIZE_FROM_SOURCE"
         VideoSettings[xSettings].update({"ParControl": emf_par})
@@ -993,11 +976,15 @@ def translate_thumbnails(ets_preset_payload, etsid):
     }
 
     ##Handle Auto Resolution
-    if ets_preset_payload['Preset']['Video']['MaxWidth'] != 'auto':
-        emf_preset_thumbnail['Settings']['VideoDescription'].update({"Width": int(ets_preset_payload['Preset']['Thumbnails']['MaxWidth'])})
+    if ets_preset_payload["Preset"]["Video"]["MaxWidth"] != "auto":
+        emf_preset_thumbnail["Settings"]["VideoDescription"].update(
+            {"Width": int(ets_preset_payload["Preset"]["Thumbnails"]["MaxWidth"])}
+        )
 
-    if ets_preset_payload['Preset']['Video']['MaxHeight'] != 'auto':
-        emf_preset_thumbnail['Settings']['VideoDescription'].update({"Height": int(ets_preset_payload['Preset']['Thumbnails']['MaxHeight'])})
+    if ets_preset_payload["Preset"]["Video"]["MaxHeight"] != "auto":
+        emf_preset_thumbnail["Settings"]["VideoDescription"].update(
+            {"Height": int(ets_preset_payload["Preset"]["Thumbnails"]["MaxHeight"])}
+        )
 
     return emf_preset_thumbnail
 
